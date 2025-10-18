@@ -1,0 +1,19 @@
+{
+  "name": "@packages/config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@packages/contracts": "1.0.0",
+    "dotenv": "^17.2.3",
+    "zod": "^4.1.12"
+  }
+}

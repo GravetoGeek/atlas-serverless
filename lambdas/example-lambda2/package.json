@@ -1,0 +1,22 @@
+{
+  "name": "example-lambda2",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type":"module",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc -p ./",
+    "start": "node -r tsconfig-paths/register dist/index.js"
+  },
+  "keywords": [],
+  "author": "Eduardo Sá Ribeiro de Moraes",
+  "license": "ISC",
+  "description": "Exemplo de Lambda2",
+  "dependencies": {
+    "@applications/handler-descriptors": "1.0.0",
+    "@packages/config": "1.0.0",
+    "@packages/logger": "1.0.0",
+    "@packages/registries": "1.0.0"
+  }
+}

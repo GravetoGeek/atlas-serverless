@@ -1,0 +1,14 @@
+{
+  "name": "@packages/runtime",
+  "version": "1.0.0",
+  "description": "Runtime registries for application-level providers.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "dependencies": {
+    "@packages/contracts": "1.0.0"
+  }
+}

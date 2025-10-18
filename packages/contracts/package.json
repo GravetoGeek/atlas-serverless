@@ -1,0 +1,17 @@
+{
+  "name": "@packages/contracts",
+  "version": "1.0.0",
+  "description": "Shared abstraction interfaces for infrastructure services.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

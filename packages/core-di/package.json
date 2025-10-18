@@ -1,0 +1,19 @@
+{
+  "name": "@packages/core-di",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "devDependencies": {},
+  "dependencies": {
+    "@packages/config": "1.0.0",
+    "@packages/contracts": "1.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

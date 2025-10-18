@@ -1,0 +1,1 @@
+{"version":3,"file":"awsTracingProvider.d.ts","sourceRoot":"","sources":["../src/awsTracingProvider.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,yBAAyB,CAAC;AAGlD,OAAO,KAAK,EAAE,gBAAgB,EAAE,eAAe,EAAuB,MAAM,qBAAqB,CAAC;AAIlG,MAAM,MAAM,sBAAsB,GAAG,eAAe,CAAC,OAAO,EAAE,gBAAgB,CAAC,CAAC;AAEhF,wBAAgB,wBAAwB,CAAC,MAAM,EAAE,gBAAgB,GAAG,sBAAsB,CAmBzF"}

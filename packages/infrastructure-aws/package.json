@@ -1,0 +1,24 @@
+{
+  "name": "@packages/infrastructure-aws",
+  "version": "1.0.0",
+  "description": "Composition utilities wiring AWS-specific providers for the application runtime.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@packages/contracts": "1.0.0",
+    "@packages/handler-registry": "1.0.0",
+    "@packages/logger": "1.0.0",
+    "@packages/providers-aws": "1.0.0",
+    "@packages/runtime": "1.0.0"
+  }
+}

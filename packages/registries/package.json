@@ -1,0 +1,16 @@
+{
+  "name": "@packages/registries",
+  "version": "1.0.0",
+  "description": "Factories e instâncias de registries de handlers por ambiente/stack.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "dependencies": {
+    "@applications/handler-descriptors": "1.0.0",
+    "@packages/contracts": "1.0.0",
+    "@packages/handler-registry": "1.0.0"
+  }
+}

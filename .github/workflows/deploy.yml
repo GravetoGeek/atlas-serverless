@@ -1,0 +1,147 @@
+name: Deploy Serverless
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'lambdas/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'turbo.json'
+      - 'tsconfig.json'
+      - 'tsconfig.base.json'
+  workflow_dispatch:
+    inputs:
+      cloud_provider:
+        description: 'Provider alvo (ex: aws)'
+        default: 'aws'
+        required: false
+      lambda_workspace:
+        description: 'Workspace da Lambda (ex: lambdas/example-lambda)'
+        default: 'lambdas/example-lambda'
+        required: false
+      lambda_function_name:
+        description: 'Nome da função no provedor'
+        required: false
+      aws_region:
+        description: 'Região AWS (sobrepõe secrets/vars)'
+        required: false
+      publish_release:
+        description: 'Define --publish ao atualizar a função'
+        required: false
+      environment:
+        description: 'Nome do ambiente GitHub'
+        default: 'production'
+        required: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || vars.DEPLOY_ENVIRONMENT || 'production' }}
+    steps:
+      - name: Definir parâmetros
+        id: params
+        shell: bash
+        run: |
+          set -euo pipefail
+          event="${{ github.event_name }}"
+          provider="${{ vars.CLOUD_PROVIDER || 'aws' }}"
+          workspace="${{ vars.LAMBDA_WORKSPACE || 'lambdas/example-lambda' }}"
+          function_name="${{ vars.AWS_LAMBDA_FUNCTION_NAME || '' }}"
+          aws_region="${{ vars.AWS_REGION || '' }}"
+          publish_flag="${{ vars.PUBLISH_RELEASE || '' }}"
+
+          if [[ "${event}" == "workflow_dispatch" ]]; then
+            provider="${{ github.event.inputs.cloud_provider || provider }}"
+            workspace="${{ github.event.inputs.lambda_workspace || workspace }}"
+            function_name="${{ github.event.inputs.lambda_function_name || function_name }}"
+            aws_region="${{ github.event.inputs.aws_region || aws_region }}"
+            publish_flag="${{ github.event.inputs.publish_release || publish_flag }}"
+          fi
+
+          if [[ -z "${function_name}" ]]; then
+            function_name="${{ secrets.AWS_LAMBDA_FUNCTION_NAME || '' }}"
+          fi
+
+          if [[ -z "${aws_region}" ]]; then
+            aws_region="${{ secrets.AWS_REGION || '' }}"
+          fi
+
+          if [[ -z "${function_name}" ]]; then
+            echo "Nome da função não definido via inputs, vars ou secrets." >&2
+            exit 1
+          fi
+
+          if [[ -z "${aws_region}" ]]; then
+            echo "Região AWS não definida." >&2
+            exit 1
+          fi
+
+          echo "provider=${provider}" >> "${GITHUB_OUTPUT}"
+          echo "workspace=${workspace}" >> "${GITHUB_OUTPUT}"
+          echo "function_name=${function_name}" >> "${GITHUB_OUTPUT}"
+          echo "aws_region=${aws_region}" >> "${GITHUB_OUTPUT}"
+          echo "publish_flag=${publish_flag}" >> "${GITHUB_OUTPUT}"
+          echo "AWS_REGION=${aws_region}" >> "${GITHUB_ENV}"
+
+      - name: Validar provider suportado
+        if: ${{ steps.params.outputs.provider != 'aws' }}
+        run: |
+          echo "Provider ${{ steps.params.outputs.provider }} ainda não possui pipeline de deploy implementado." >&2
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Construir workspaces
+        run: npm run build
+
+      - name: Configurar credenciais AWS com OIDC
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ steps.params.outputs.aws_region }}
+
+      - name: Configurar credenciais AWS com chaves
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME == '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ steps.params.outputs.aws_region }}
+
+      - name: Empacotar Lambda
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          package_path=$(bash scripts/package-lambda.sh "${{ steps.params.outputs.workspace }}" "build/artifacts" "${{ steps.params.outputs.function_name }}")
+          echo "package_path=${package_path}" >> "${GITHUB_OUTPUT}"
+
+      - name: Publicar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.params.outputs.function_name }}-${{ github.run_id }}
+          path: ${{ steps.package.outputs.package_path }}
+
+      - name: Atualizar função AWS Lambda
+        env:
+          AWS_REGION: ${{ steps.params.outputs.aws_region }}
+          ARTIFACTS_DIR: build/artifacts
+          ZIP_BASENAME: ${{ steps.params.outputs.function_name }}
+          PACKAGE_PATH: ${{ steps.package.outputs.package_path }}
+          PUBLISH_RELEASE: ${{ steps.params.outputs.publish_flag }}
+        run: |
+          bash scripts/deploy-aws-lambda.sh "${{ steps.params.outputs.workspace }}" "${{ steps.params.outputs.function_name }}"
