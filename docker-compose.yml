@@ -1,0 +1,31 @@
+services:
+  monorepo:
+    build: .
+    command: npm run local
+    volumes:
+      - .:/app
+      - npm-cache:/root/.npm
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING
+      - CLOUD_REGION
+      - CLOUD_ACCESS_KEY_ID
+      - CLOUD_SECRET_ACCESS_KEY
+      - CLOUD_ENDPOINT_URL
+      - NODE_ENV
+      - LOG_LEVEL
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+  
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=ssm
+      - DEBUG=1
+    volumes:
+      - ./localstack:/var/lib/localstack
+volumes:
+  npm-cache:
+  localstack-data:

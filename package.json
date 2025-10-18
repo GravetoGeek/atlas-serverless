@@ -1,0 +1,47 @@
+{
+  "name": "serverless_template",
+  "version": "2.0.0",
+  "description": "Projeto template em typescript",
+  "main": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "eslint .",
+    "lint:all": "turbo run lint",
+    "test": "turbo run test",
+    "vitest": "vitest",
+    "dev": "turbo run dev --parallel",
+    "local": "nodemon --watch server.ts --watch packages --watch lambdas --ext ts"
+  },
+  "keywords": [
+    "serverless",
+    "typescript"
+  ],
+  "author": "Eduardo Sá Ribeiro de Moraes",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.2",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2",
+    "eslint": "^9.13.0",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "workspaces": [
+    "packages/*",
+    "lambdas/*"
+  ],
+  "packageManager": "npm@11.5.1",
+  "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.65.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.206.0",
+    "@opentelemetry/sdk-node": "^0.206.0"
+  }
+}

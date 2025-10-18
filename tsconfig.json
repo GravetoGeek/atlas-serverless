@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true
+    },
+    "include": [
+        "server.ts",
+        "routes.ts",
+        "registries",
+        "packages",
+        "lambdas"
+    ]
+}
