@@ -15,6 +15,7 @@ zip_basename="${ZIP_BASENAME:-${lambda_function_name}}"
 publish_flag="${PUBLISH_RELEASE:-}" # Define --publish se desejado
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 package_script="${script_dir}/package-lambda.sh"
+handler_entry="${HANDLER_ENTRY:-index.handler}"
 
 if ! command -v aws >/dev/null 2>&1; then
   echo "AWS CLI não encontrado no PATH." >&2
@@ -37,6 +38,11 @@ if [[ -z "${aws_region}" ]]; then
   echo "Variável AWS_REGION não definida." >&2
   exit 1
 fi
+
+aws lambda update-function-configuration \
+  --region "${aws_region}" \
+  --function-name "${lambda_function_name}" \
+  --handler "${handler_entry}" >/dev/null 2>&1 || true
 
 if [[ -n "${publish_flag}" ]]; then
   aws lambda update-function-code \

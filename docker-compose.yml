@@ -22,10 +22,13 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=ssm
+      - SERVICES=lambda,iam,ssm,logs
       - DEBUG=1
+      - LAMBDA_EXECUTOR=docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - ./localstack:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   npm-cache:
   localstack-data:

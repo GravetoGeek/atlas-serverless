@@ -156,7 +156,7 @@ serverless_template/
 
 - `ci.yml` executa lint, testes e build em cada `push` ou `pull request`, garantindo que os pacotes continuem íntegros.
 - `deploy.yml` resolve parâmetros dinamicamente (inputs, variáveis ou secrets) e publica a Lambda via AWS CLI. Ele foi projetado para aceitar facilmente outros providers adicionando novos blocos condicionais.
-- O script `scripts/package-lambda.sh` empacota qualquer workspace de Lambda em um artefato `.zip` reusável por pipelines ou execução local.
+- O script `scripts/bundle-lambda.sh` gera um bundle único com esbuild (formato ESM) para qualquer workspace de Lambda; `scripts/package-lambda.sh` reutiliza esse bundle nos pipelines ou execuções locais.
 - O script `scripts/deploy-aws-lambda.sh` utiliza o pacote gerado para atualizar a função AWS, sendo o ponto de extensão natural para outros provedores.
 
 ### Configuração exigida para o deploy automatizado
@@ -170,7 +170,7 @@ serverless_template/
 
 ### Adaptando para outros provedores
 
-- Crie scripts específicos em `scripts/` para o novo provider reutilizando a saída do `package-lambda.sh`.
+- Crie scripts específicos em `scripts/` para o novo provider reutilizando a saída do `bundle-lambda.sh` (ou do `package-lambda.sh`, que apenas delega ao bundle esbuild).
 - Adicione um bloco condicionado no `deploy.yml` validando `provider` e disparando o script recém-criado.
 - Mantenha os contratos em `@packages/contracts` atualizados e encapsule SDKs específicos em pacotes dedicados dentro de `packages/providers-*`.
 
