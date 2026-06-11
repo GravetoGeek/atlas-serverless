@@ -16,9 +16,9 @@
     },
     "dependencies": {
         "@aws-sdk/client-ssm": "^3.911.0",
-        "@opentelemetry/auto-instrumentations-node": "^0.65.0",
+        "@opentelemetry/auto-instrumentations-node": "^0.76.0",
         "@opentelemetry/exporter-trace-otlp-http": "^0.206.0",
-        "@opentelemetry/sdk-node": "^0.206.0",
+        "@opentelemetry/sdk-node": "^0.219.0",
         "@packages/contracts": "1.0.0"
     }
 }
