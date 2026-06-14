@@ -30,9 +30,9 @@
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "turbo": "^2.5.8",
+    "turbo": "^2.9.14",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.8"
   },
   "workspaces": [
     "packages/*",
@@ -40,8 +40,8 @@
   ],
   "packageManager": "npm@11.5.1",
   "dependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.65.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.77.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.206.0",
-    "@opentelemetry/sdk-node": "^0.206.0"
+    "@opentelemetry/sdk-node": "^0.219.0"
   }
 }
